@@ -1,7 +1,4 @@
 
-
-import TaskDbHelper
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,16 +6,15 @@ import androidx.compose.foundation.text.BasicTextField
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.input.TextFieldValue
+
 
 @Composable
 fun TodoScreen(dbHelper: TaskDbHelper) {
@@ -33,10 +29,12 @@ fun TodoScreen(dbHelper: TaskDbHelper) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var taskName by remember { mutableStateOf("") }
+        var showDialog by remember { mutableStateOf(false) }
+        var dialogMessage by remember { mutableStateOf("") }
 
         // Task input
         TextField(
@@ -56,12 +54,16 @@ fun TodoScreen(dbHelper: TaskDbHelper) {
                     taskList.clear()
                     taskList.addAll(dbHelper.getAllTasks()) // Reload tasks
                     taskName = "" // Clear input after adding
+                } else {
+                    dialogMessage = "Task name cannot be empty!"
+                    showDialog = true
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Add Task")
         }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -84,8 +86,25 @@ fun TodoScreen(dbHelper: TaskDbHelper) {
                     }
                 )
             }
+
         }
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text(text = "Message") },
+                text = { Text(text = dialogMessage) },
+                confirmButton = {
+                    Button(
+                        onClick = { showDialog = false }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
     }
+
 }
 
 @Composable
@@ -120,3 +139,6 @@ fun TaskRow(
         }
     }
 }
+
+
+

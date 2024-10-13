@@ -63,16 +63,18 @@ class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
     }
 
     // Update task completion status
-    fun updateTask(id: Int, name: String, isCompleted: Boolean) {
-        val values = ContentValues().apply {
-            put(COLUMN_NAME, name)
-            put(COLUMN_COMPLETED, if (isCompleted) 1 else 0)
-        }
-        writableDatabase.update(TABLE_NAME, values, "$COLUMN_ID = ?", arrayOf(id.toString()))
+    fun updateTask(task: Task) {
+        val values = ContentValues()
+        values.put("name", task.name)
+        values.put("completed", if (task.isCompleted) 1 else 0)
+        val db = writableDatabase
+        db.update(TABLE_NAME, values, "id = ?", arrayOf(task.id.toString()))
+        db.close()
     }
 
     // Delete a task from the database
     fun deleteTask(id: Int) {
         writableDatabase.delete(TABLE_NAME, "$COLUMN_ID = ?", arrayOf(id.toString()))
     }
+
 }

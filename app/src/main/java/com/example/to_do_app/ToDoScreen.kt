@@ -7,8 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 
 import androidx.compose.ui.unit.dp
+import com.example.to_do_app.Task
 
 
 @Composable
@@ -35,7 +37,7 @@ fun TodoScreen(dbHelper: TaskDbHelper) {
 
         // Task input
         TextField(
-            value = taskName.trim(),
+            value = taskName,
             onValueChange = { taskName = it },
             label = { Text("Task Name") },
             modifier = Modifier.fillMaxWidth()
@@ -128,12 +130,13 @@ fun TaskRow(
     task: Task,
     onTaskUpdate: (Task) -> Unit,
     onTaskDelete: (Task) -> Unit,
-    onTaskEdit: (Task) -> Unit // Add the edit callback
+    onTaskEdit: (Task) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(vertical = 8.dp), // Adjust padding here to make it uniform
+        verticalAlignment = Alignment.CenterVertically, // Align items vertically to the center
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Checkbox for completing/undoing the task
@@ -144,18 +147,35 @@ fun TaskRow(
                 onTaskUpdate(task)
             }
         )
-        Text(task.name, modifier = Modifier.weight(2f))
 
+        Text(
+            text = task.name,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp), // Adjust start padding
+            maxLines = 1,
+            textDecoration = if (task.isCompleted) TextDecoration.LineThrough else TextDecoration.None
+        )
+
+        // Edit and Delete buttons in a horizontal row with fixed width
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Edit button
-            Button(onClick = { onTaskEdit(task) }) {
+            Button(
+                onClick = { onTaskEdit(task) },
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 70.dp)
+            ) {
                 Text("Edit")
             }
 
             // Delete button
-            Button(onClick = { onTaskDelete(task) }) {
+            Button(
+                onClick = { onTaskDelete(task) },
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 70.dp) // Set fixed button width
+            ) {
                 Text("Delete")
             }
         }

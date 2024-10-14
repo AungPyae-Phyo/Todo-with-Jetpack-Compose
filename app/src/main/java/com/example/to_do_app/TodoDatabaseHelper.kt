@@ -4,13 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-
-// Data class for Task
-data class Task(
-    var id: Int = 0,
-    var name: String,
-    var isCompleted: Boolean = false
-)
+import com.example.to_do_app.Task
 
 class TaskDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
